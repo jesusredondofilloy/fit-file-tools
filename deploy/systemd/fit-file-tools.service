@@ -1,0 +1,27 @@
+[Unit]
+Description=fit-file-tools FastAPI backend
+After=network.target
+
+[Service]
+Type=simple
+User=fittools
+Group=fittools
+WorkingDirectory=/srv/fit-file-tools/backend
+EnvironmentFile=/srv/fit-file-tools/backend/.env
+ExecStart=/srv/fit-file-tools/backend/.venv/bin/uvicorn api.main:app \
+  --host 127.0.0.1 --port 8000 \
+  --proxy-headers --forwarded-allow-ips 127.0.0.1
+Restart=on-failure
+RestartSec=3
+
+# Hardening — backend is internet-facing
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target
